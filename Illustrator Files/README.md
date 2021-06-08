@@ -7,7 +7,7 @@ Create your own DWIN Typeface cards for generating a .HZK font file.
 ## Steps to take:
 - Open first Illustrator file.
 - Select all unlocked objects (ctrl+A).
-- Select your font in the character window on the right.
+- Select your font in the character window on the right. I would suggest using a monospaced font as normal fonts won't easily fit within the grid and most likely will require a lot of adjustments.
 - Adjust the font size, vertical and horizontal scale, and the baseline shift for each character until all characters fit inside the grid.
 - When done click on 'File > Export > Export As'.
 - Select png as filetype, choose a location, select the option 'Use Artboards' and click export.
