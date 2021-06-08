@@ -1,9 +1,10 @@
-Create your own DWIN Typeface cards for generating a .HZK font file:
+# Create DWIN Typeface cards
+Create your own DWIN Typeface cards for generating a .HZK font file.
 
-Requirements:
+## Requirements:
 - Adobe CC Illustrator version 24 and above.
 
-Steps to take:
+## Steps to take:
 - Open first Illustrator file.
 - Select all unlocked objects (ctrl+A).
 - Select your font in the character window on the right.
