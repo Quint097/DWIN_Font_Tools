@@ -12,6 +12,7 @@ Create your own DWIN Typeface cards for generating a .HZK font file.
 - When done click on 'File > Export > Export As'.
 - Select png as filetype, choose a location, select the option 'Use Artboards' and click export.
 - In the window that pops up, set resolution to 'Screen (72 ppi)', set anti-aliasing to 'None', leave Interlaced unselected and set Background color to 'White'.
+- Click on OK and your file is saved.
 - Check if the file exported correctly.
 
 Repeat these steps for all the files in this folder.
