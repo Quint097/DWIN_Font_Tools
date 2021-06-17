@@ -5,4 +5,4 @@ This repo contains my codes for encoding and decoding .HZK Font files used on DW
 Instructions on how to encode, decode, upload and create .HZK Font files can be found inside each folder.
 
 ## Revert to the original font
-You can revert back to the original font simply by uploading the file from the '.HZK Font Files/DWIN Font (original)' foldor to your display.
+You can revert back to the original font simply by uploading the file from `.HZK Font Files/DWIN Font (original)/` to your display.
