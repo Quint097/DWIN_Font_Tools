@@ -9,7 +9,7 @@ Steps to decode .HZK font file to images:
 
 --Or--
 
-- Place .HZK font file in this folder. You can create your own using the DWIN Typeface Cards and the .HZK Font Encoder.
+- Place .HZK font file in this folder.
 - double-click on the Decode.bat script.
 - follow the instructions on the console.
 
