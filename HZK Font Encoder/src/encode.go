@@ -5,25 +5,50 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"log"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	fmt.Println("Running, Please wait...")
+	fmt.Println("======  HZK Font Encoder  ======")
+	fmt.Println("")
+	srcpath, err := os.Executable()
+	srcpath = filepath.Dir(srcpath)
+	if err != nil {
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
+	}
+	path := strings.TrimSuffix(srcpath, "src")
+	if _, err := os.Stat(path + "\\Images"); os.IsNotExist(err) {
+		fmt.Println("==!  Can't find the image folder.")
+		os.Exit(1)
+	}
+	var filename string
+	if len(os.Args) < 2 {
+		fmt.Print("==>  Please enter the name of your new font file ending with .HZK: ")
+		fmt.Scanln(&filename)
+		filename = path + "\\" + filename
+	}
+	if !strings.HasSuffix(filename, ".HZK") {
+		fmt.Println("==!  Filename can not be used.")
+		os.Exit(1)
+	}
+	fmt.Println("")
 	widths := []int{6, 8, 10, 12, 14, 16, 20, 24, 28, 32}
 	var charImage image.Image
 	image.RegisterFormat("png", "png", png.Decode, png.DecodeConfig)
-	fontFile, err := os.Open("0T5UIC1.HZK")
+	fontFile, err := os.Open(srcpath + "\\0T5UIC1.HZK")
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
 	}
-	newFontFile, err := os.Create("0T5UIC1_NEW.HZK")
+	newFontFile, err := os.Create(filename)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
 	}
-	fmt.Println("")
 	for size, width := range widths {
 		height := 2 * width
 		var numBytes int
@@ -34,23 +59,28 @@ func main() {
 		}
 		picWidth := ((width + 1) * 16) + 1
 		picHeight := ((height + 1) * 8) + 1
-		imgPath := fmt.Sprintf("0x%02d_%dx%d_0-127.png", size, width, height)
+		imgPath := fmt.Sprintf(path+"\\Images\\0x%02d_%dx%d_0-127.png", size, width, height)
+		fmt.Println("===  Processing: " + imgPath)
 		imgExists := true
 		if _, err := os.Stat(imgPath); os.IsNotExist(err) {
 			imgExists = false
+			fmt.Println("===  Skipping: Image not found.")
 		} else {
 			imgFile, err := os.Open(imgPath)
 			if err != nil {
-				log.Fatal(err)
+				fmt.Println("==!  " + err.Error())
+				os.Exit(1)
 			}
 			defer imgFile.Close()
 			charImage, _, err = image.Decode(imgFile)
 			if err != nil {
-				log.Fatal(err)
+				fmt.Println("==!  " + err.Error())
+				os.Exit(1)
 			}
 			bounds := charImage.Bounds()
 			if picWidth != bounds.Max.X || picHeight != bounds.Max.Y {
-				log.Fatal(fmt.Sprintf("Picture 0x0%d is not the correct dimensions. Picture needs to be %dx%d", size, picWidth, picHeight))
+				fmt.Printf("==!  Picture 0x0%d is not the correct dimensions. Picture needs to be %dx%d\n", size, picWidth, picHeight)
+				os.Exit(1)
 			}
 		}
 		charBytes := make([]byte, numBytes)
@@ -63,7 +93,8 @@ func main() {
 					bits := ""
 					_, err := fontFile.Read(charBytes)
 					if err != nil {
-						log.Fatal(err)
+						fmt.Println("==!  " + err.Error())
+						os.Exit(1)
 					}
 					if imgExists {
 						for horz := 1; horz <= width; horz++ {
@@ -77,7 +108,8 @@ func main() {
 							} else if Pixel == int(color.White.Y) {
 								bits += "0"
 							} else {
-								log.Fatal("Picture could not be scanned correctly")
+								fmt.Println("==!  Picture could not be scanned correctly")
+								os.Exit(1)
 							}
 						}
 					}
@@ -90,6 +122,7 @@ func main() {
 				}
 			}
 		}
+		fmt.Println("")
 	}
 
 	rest := make([]byte, 2048)
@@ -99,13 +132,16 @@ func main() {
 			break
 		}
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
 		}
 		if _, err := newFontFile.Write(rest[:n]); err != nil {
-			log.Fatal(err)
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
 		}
 	}
-	fmt.Println("Finished")
+	fmt.Println("======  Finished  ======")
+	fmt.Println("")
 }
 
 func BitsToBlocks(data string, byteLen int) []byte {
@@ -127,7 +163,8 @@ func BitsToBlocks(data string, byteLen int) []byte {
 		}
 		v, err := strconv.ParseUint(str, 2, 8)
 		if err != nil {
-			panic(err)
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
 		}
 		out = append([]byte{byte(v)}, out...)
 	}

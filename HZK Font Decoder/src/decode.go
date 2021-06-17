@@ -4,23 +4,53 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"log"
+	"image/png"
 	"math/bits"
 	"os"
-
-	"image/png"
+	"path/filepath"
+	"strings"
 )
 
 var Gray = color.Gray16{0x8888}
 
 func main() {
-	fmt.Println("Running, Please wait...")
-	widths := []int{6, 8, 10, 12, 14, 16, 20, 24, 28, 32}
-	fontFile, err := os.Open("0T5UIC1.HZK")
+	fmt.Println("======  HZK Font Decoder  ======")
+	fmt.Println("")
+	srcpath, err := os.Executable()
+	srcpath = filepath.Dir(srcpath)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
+	}
+	path := strings.TrimSuffix(srcpath, "src")
+	if _, err := os.Stat(path + "\\Images"); os.IsNotExist(err) {
+		fmt.Println("===  Creating Image Folder")
+		err := os.Mkdir(path+"\\Images", 0777)
+		if err != nil {
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
+		}
+	}
+	var filename string
+	if len(os.Args) < 2 {
+		fmt.Print("==>  Please enter the name of the font file ending in .HZK: ")
+		fmt.Scanln(&filename)
+		filename = path + "\\" + filename
+	} else {
+		filename = os.Args[1]
+	}
+	if !strings.HasSuffix(filename, ".HZK") {
+		fmt.Println("==!  File could not be recognized.")
+		os.Exit(1)
 	}
 	fmt.Println("")
+	widths := []int{6, 8, 10, 12, 14, 16, 20, 24, 28, 32}
+	fontFile, err := os.Open(filename)
+	if err != nil {
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
+	}
+
 	for size, width := range widths {
 		height := 2 * width
 		var numBytes int
@@ -44,7 +74,8 @@ func main() {
 				for vert := 1; vert <= height; vert++ {
 					_, err := fontFile.Read(charBytes)
 					if err != nil {
-						log.Fatal(err)
+						fmt.Println("==!  " + err.Error())
+						os.Exit(1)
 					}
 					bits := bitsToBits(charBytes)
 					charImage.Set((imgColumn * (width + 1)), imgRow*(height+1)+vert, Gray)
@@ -64,9 +95,12 @@ func main() {
 		for j := 0; j < picHeight; j++ {
 			charImage.Set(picWidth-1, j, Gray)
 		}
-		imgFile, err := os.Create(fmt.Sprintf("0x%02d_%dx%d_0-127.png", size, width, height))
+		imgName := fmt.Sprintf("\\Images\\0x%02d_%dx%d_0-127.png", size, width, height)
+		fmt.Println("===  Creating: " + imgName)
+		imgFile, err := os.Create(path + imgName)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
 		}
 		png.Encode(imgFile, charImage)
 		imgFile.Close()
@@ -75,8 +109,10 @@ func main() {
 	mid := make([]byte, 5888)
 	_, err = fontFile.Read(mid)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("==!  " + err.Error())
+		os.Exit(1)
 	}
+	fmt.Println("")
 	for uni := 161; uni < 255; uni++ {
 		eofError := false
 		width := 16
@@ -136,9 +172,12 @@ func main() {
 		for j := 0; j < picHeight; j++ {
 			charImage.Set(picWidth-1, j, Gray)
 		}
-		imgFile, err := os.Create(fmt.Sprintf("%dx%d_%X.png", width, height, uni))
+		imgName := fmt.Sprintf("\\Images\\%dx%d_%X.png", width, height, uni)
+		fmt.Println("===  Creating: " + imgName)
+		imgFile, err := os.Create(path + imgName)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("==!  " + err.Error())
+			os.Exit(1)
 		}
 		png.Encode(imgFile, charImage)
 		imgFile.Close()
@@ -147,7 +186,9 @@ func main() {
 			break
 		}
 	}
-	fmt.Println("Finished")
+	fmt.Println("")
+	fmt.Println("======  Finished  ======")
+	fmt.Println("")
 }
 
 func bitsToBits(data []byte) (st []int) {
