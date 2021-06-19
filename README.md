@@ -8,4 +8,4 @@ Instructions on how to encode, decode, upload and create .HZK Font files can be 
 You can revert back to the original font simply by uploading the file from `HZK Font Files/DWIN Font (original)/` to your display.
 
 ## Dowloading
-Some People seem to have trouble downloading the font files. if this happens to you, then you can download the ZIP file called `HZK Font Files.zip`. This should contain all the available font files.
+You can download the most recent version of the fonts form the release tab.
