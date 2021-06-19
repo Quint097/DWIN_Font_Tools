@@ -1,5 +1,5 @@
 # DWIN Font Files
-This repo contains my codes for encoding and decoding .HZK Font files used on DWIN displays. I have based my code largely on those at https://github.com/enigmaquip/T5UIC1_Font
+This repo contains my codes for encoding and decoding .HZK Font files used on the Creality Ender 3 V2 DWIN displays.
 
 ## Instruction
 Instructions on how to encode, decode, upload and create .HZK Font files can be found inside each folder.
