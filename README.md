@@ -1,4 +1,4 @@
-# DWIN Font Files
+# DWIN Font Tools
 This repo contains my codes for encoding and decoding .HZK Font files used on the Creality Ender 3 V2 DWIN displays.
 
 ## Instruction
